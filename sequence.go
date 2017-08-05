@@ -119,16 +119,21 @@ func (m *Manager) String() string {
 	return str
 }
 
+// A Seq is a frame sequence. It does not hold sequence name.
 type Seq struct {
 	frames map[int]struct{}
 }
 
+// NewSeq creates a new sequence.
 func NewSeq() *Seq {
 	return &Seq{
 		frames: make(map[int]struct{}),
 	}
 }
 
+// AddFrame adds a frame into sequence.
+// It treats negative frames are invalid.
+// So ErrNegativeFrame error will return when it takes a negative frame.
 func (s *Seq) AddFrame(f int) error {
 	if f < 0 {
 		return ErrNegativeFrame
@@ -140,6 +145,7 @@ func (s *Seq) AddFrame(f int) error {
 	return nil
 }
 
+// Ranges convert a sequence to several contiguous ranges.
 func (s *Seq) Ranges() []*Range {
 	if len(s.frames) == 0 {
 		return []*Range{}
@@ -164,6 +170,7 @@ func (s *Seq) Ranges() []*Range {
 	return rngs
 }
 
+// String expresses a sequence using ranges.
 func (s *Seq) String() string {
 	str := ""
 	rngs := s.Ranges()
@@ -176,11 +183,13 @@ func (s *Seq) String() string {
 	return str
 }
 
+// Range is a contiguous frame range.
 type Range struct {
 	minf int
 	maxf int
 }
 
+// NewRange creates a new range.
 func NewRange(f int) *Range {
 	return &Range{
 		minf: f,
@@ -188,6 +197,8 @@ func NewRange(f int) *Range {
 	}
 }
 
+// Extend extends a range by one if the frame is bigger than current max frame by 1.
+// If it extends, it returns true, or it returns false.
 func (r *Range) Extend(f int) bool {
 	if f != r.maxf+1 {
 		return false
@@ -196,6 +207,8 @@ func (r *Range) Extend(f int) bool {
 	return true
 }
 
+// String express the range with dash. Like "1-10".
+// But if the min and max is same, it will just show one. Like "5".
 func (r *Range) String() string {
 	if r.minf == r.maxf {
 		return fmt.Sprintf("%d", r.minf)
