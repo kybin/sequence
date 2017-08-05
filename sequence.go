@@ -184,6 +184,7 @@ func (s *Seq) String() string {
 }
 
 // Range is a contiguous frame range.
+// It includes Max frame.
 type Range struct {
 	Min int
 	Max int
