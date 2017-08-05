@@ -15,8 +15,39 @@ var (
 	ErrNegativeFrame = errors.New("nagative frame")
 )
 
-var Split = regexp.MustCompile(`(.*\D)*(\d+)(.+?)$`)
+// Splitter is a file name splitter.
+type Splitter struct {
+	re *regexp.Regexp
+}
 
+// reSplit is default regular expression for Splitter.
+var reSplit = regexp.MustCompile(`(.*\D)*(\d+)(.*?)$`)
+
+// NewSplitter creates a new splitter.
+func NewSplitter() *Splitter {
+	return &Splitter{
+		re: reSplit,
+	}
+}
+
+// SetRegexp let users of this package to make their own splitter.
+// Splitter always assume that the regular expression is right.
+// So who makes their own splitter should ensure that it is right.
+func (s *Splitter) SetRegexp(re *regexp.Regexp) {
+	s.re = re
+}
+
+// Split takes file name and splits it into 3 parts,
+// which is pre, digits, and post.
+func (s *Splitter) Split(fname string) (pre, digits, post string, err error) {
+	m := s.re.FindStringSubmatch(fname)
+	if m == nil {
+		return "", "", "", ErrNotSeqfile
+	}
+	return m[1], m[2], m[3], nil
+}
+
+// Fmt{Sharp, DollarF, PrecentD} are pre-defined formatter, that covers most user's need.
 var (
 	FmtSharp = func(pre, digits, post string) string {
 		return pre + strings.Repeat("#", len(digits)) + post
@@ -30,25 +61,25 @@ var (
 )
 
 type Manager struct {
-	Seqs       map[string]*Seq
+	Seqs map[string]*Seq
+
+	splitter   *Splitter
 	formatting func(pre, digits, post string) string
 }
 
-func NewManager(formatting func(pre, digits, post string) string) *Manager {
+func NewManager(splitter *Splitter, formatting func(pre, digits, post string) string) *Manager {
 	return &Manager{
 		Seqs:       make(map[string]*Seq),
+		splitter:   splitter,
 		formatting: formatting,
 	}
 }
 
 func (m *Manager) Add(fname string) error {
-	sub := Split.FindStringSubmatch(fname)
-	if sub == nil {
-		return ErrNotSeqfile
+	pre, digits, post, err := m.splitter.Split(fname)
+	if err != nil {
+		return err
 	}
-	pre := sub[0]
-	digits := sub[1]
-	post := sub[2]
 
 	name := m.formatting(pre, digits, post)
 	frame, _ := strconv.Atoi(digits)
