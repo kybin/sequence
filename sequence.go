@@ -74,7 +74,7 @@ func (m *Manager) String() string {
 	str := ""
 	for _, n := range m.SeqNames() {
 		if str != "" {
-			str += " "
+			str += "\n"
 		}
 		str += fmt.Sprintf("%s %s", n, m.Seqs[n])
 	}
@@ -133,7 +133,11 @@ func (s *Seq) String() string {
 		if str != "" {
 			str += " "
 		}
-		str += fmt.Sprintf("%d-%d", r.minf, r.maxf)
+		if r.minf == r.maxf {
+			str += fmt.Sprintf("%d", r.minf)
+		} else {
+			str += fmt.Sprintf("%d-%d", r.minf, r.maxf)
+		}
 	}
 	return str
 }
