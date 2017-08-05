@@ -40,6 +40,42 @@ func TestSplitter(t *testing.T) {
 	}
 }
 
+func TestFormatting(t *testing.T) {
+	cases := []struct {
+		pre          string
+		digits       string
+		post         string
+		wantSharp    string
+		wantDollarF  string
+		wantPercentD string
+	}{
+		{
+			pre:          "img.",
+			digits:       "0001",
+			post:         ".exr",
+			wantSharp:    "img.####.exr",
+			wantDollarF:  "img.$F4.exr",
+			wantPercentD: "img.%04d.exr",
+		},
+	}
+	for _, c := range cases {
+		gotSharp := FmtSharp(c.pre, c.digits, c.post)
+		if gotSharp != c.wantSharp {
+			t.Fatalf("FmtSharp - got: %v, want: %v", gotSharp, c.wantSharp)
+		}
+
+		gotDollarF := FmtDollarF(c.pre, c.digits, c.post)
+		if gotDollarF != c.wantDollarF {
+			t.Fatalf("FmtDollarF - got: %v, want: %v", gotDollarF, c.wantDollarF)
+		}
+
+		gotPercentD := FmtPercentD(c.pre, c.digits, c.post)
+		if gotPercentD != c.wantPercentD {
+			t.Fatalf("FmtPercentD - got: %v, want: %v", gotPercentD, c.wantPercentD)
+		}
+	}
+}
+
 func Test(t *testing.T) {
 	cases := []struct {
 		files []string

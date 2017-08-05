@@ -56,7 +56,7 @@ var (
 		return pre + "$F" + strconv.Itoa(len(digits)) + post
 	}
 	FmtPercentD = func(pre, digits, post string) string {
-		return pre + "%d" + strconv.Itoa(len(digits)) + post
+		return pre + "%0" + strconv.Itoa(len(digits)) + "d" + post
 	}
 )
 
