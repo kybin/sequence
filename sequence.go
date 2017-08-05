@@ -185,33 +185,33 @@ func (s *Seq) String() string {
 
 // Range is a contiguous frame range.
 type Range struct {
-	minf int
-	maxf int
+	Min int
+	Max int
 }
 
 // NewRange creates a new range.
 func NewRange(f int) *Range {
 	return &Range{
-		minf: f,
-		maxf: f,
+		Min: f,
+		Max: f,
 	}
 }
 
 // Extend extends a range by one if the frame is bigger than current max frame by 1.
 // If it extends, it returns true, or it returns false.
 func (r *Range) Extend(f int) bool {
-	if f != r.maxf+1 {
+	if f != r.Max+1 {
 		return false
 	}
-	r.maxf = f
+	r.Max = f
 	return true
 }
 
 // String express the range with dash. Like "1-10".
 // But if the min and max is same, it will just show one. Like "5".
 func (r *Range) String() string {
-	if r.minf == r.maxf {
-		return fmt.Sprintf("%d", r.minf)
+	if r.Min == r.Max {
+		return fmt.Sprintf("%d", r.Min)
 	}
-	return fmt.Sprintf("%d-%d", r.minf, r.maxf)
+	return fmt.Sprintf("%d-%d", r.Min, r.Max)
 }
