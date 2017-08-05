@@ -31,7 +31,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	man := sequence.NewManager(sequence.NewSplitter(), sequence.FmtSharp)
+	man := sequence.NewManager(sequence.DefaultSplitter, sequence.FmtSharp)
 	for _, f := range filenames {
 		man.Add(f)
 	}

@@ -10,7 +10,7 @@ It's simple package, so you could just add files and print it.
 Basically it look like this.
 
 ```
-man := sequence.NewManager(sequence.NewSplitter(), sequence.FmtSharp)
+man := sequence.NewManager(sequence.DefaultSplitter, sequence.FmtSharp)
 for _, f := range filenames {
 	man.Add(f)
 }

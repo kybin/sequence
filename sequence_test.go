@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestSplitter(t *testing.T) {
+func TestDefaultSplitter(t *testing.T) {
 	cases := []struct {
 		fname string
 		want  []string
@@ -27,9 +27,8 @@ func TestSplitter(t *testing.T) {
 			want:  []string{"/a/b/c/img.", "0001", ".exr"},
 		},
 	}
-	splitter := NewSplitter()
 	for _, c := range cases {
-		gotPre, gotDigits, gotPost, err := splitter.Split(c.fname)
+		gotPre, gotDigits, gotPost, err := DefaultSplitter.Split(c.fname)
 		if err != nil {
 			t.Fatalf("got err: %v", err)
 		}
@@ -97,7 +96,7 @@ func TestDefaultUsecase(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		man := NewManager(NewSplitter(), FmtSharp)
+		man := NewManager(DefaultSplitter, FmtSharp)
 		for _, f := range c.files {
 			err := man.Add(f)
 			if err != nil {

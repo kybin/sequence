@@ -20,21 +20,20 @@ type Splitter struct {
 	re *regexp.Regexp
 }
 
-// reSplit is default regular expression for Splitter.
-var reSplit = regexp.MustCompile(`(.*\D)*(\d+)(.*?)$`)
+// reDefaultSplit is default regular expression for Splitter.
+var reDefaultSplit = regexp.MustCompile(`(.*\D)*(\d+)(.*?)$`)
 
-// NewSplitter creates a new splitter.
-func NewSplitter() *Splitter {
-	return &Splitter{
-		re: reSplit,
-	}
-}
+// DefaultSplitter is a default splitter for this package.
+// User could create their own splitter. See NewSplitter.
+var DefaultSplitter = NewSplitter(reDefaultSplit)
 
-// SetRegexp let users of this package to make their own splitter.
+// NewSplitter creates a new custom splitter.
 // Splitter always assume that the regular expression is right.
 // So who makes their own splitter should ensure that it is right.
-func (s *Splitter) SetRegexp(re *regexp.Regexp) {
-	s.re = re
+func NewSplitter(re *regexp.Regexp) *Splitter {
+	return &Splitter{
+		re: re,
+	}
 }
 
 // Split takes file name and splits it into 3 parts,
