@@ -164,11 +164,7 @@ func (s *Seq) String() string {
 		if str != "" {
 			str += " "
 		}
-		if r.minf == r.maxf {
-			str += fmt.Sprintf("%d", r.minf)
-		} else {
-			str += fmt.Sprintf("%d-%d", r.minf, r.maxf)
-		}
+		str += r.String()
 	}
 	return str
 }
@@ -191,4 +187,11 @@ func (r *Range) Extend(f int) bool {
 	}
 	r.maxf = f
 	return true
+}
+
+func (r *Range) String() string {
+	if r.minf == r.maxf {
+		return fmt.Sprintf("%d", r.minf)
+	}
+	return fmt.Sprintf("%d-%d", r.minf, r.maxf)
 }
