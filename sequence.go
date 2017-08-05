@@ -60,6 +60,7 @@ var (
 	}
 )
 
+// A Manager is a sequence manager.
 type Manager struct {
 	Seqs map[string]*Seq
 
@@ -67,6 +68,7 @@ type Manager struct {
 	formatting func(pre, digits, post string) string
 }
 
+// NewManager creates a new sequence manager.
 func NewManager(splitter *Splitter, formatting func(pre, digits, post string) string) *Manager {
 	return &Manager{
 		Seqs:       make(map[string]*Seq),
@@ -75,6 +77,8 @@ func NewManager(splitter *Splitter, formatting func(pre, digits, post string) st
 	}
 }
 
+// Add adds a file to the manager.
+// If the file's sequence is not exist yet, it will create a new sequence automatically.
 func (m *Manager) Add(fname string) error {
 	pre, digits, post, err := m.splitter.Split(fname)
 	if err != nil {
@@ -92,6 +96,7 @@ func (m *Manager) Add(fname string) error {
 	return s.AddFrame(frame)
 }
 
+// SeqNames returns it's sequence names in ascending order.
 func (m *Manager) SeqNames() []string {
 	names := []string{}
 	for n := range m.Seqs {
@@ -101,6 +106,8 @@ func (m *Manager) SeqNames() []string {
 	return names
 }
 
+// String returns a string that shows it's sequences.
+// It will be multiple lines if it has more than one sequence.
 func (m *Manager) String() string {
 	str := ""
 	for _, n := range m.SeqNames() {
