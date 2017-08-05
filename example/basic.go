@@ -37,4 +37,7 @@ func main() {
 	}
 
 	fmt.Println(man)
+	// Output:
+	// another.####.exr 1-4 7-10
+	// img.####.exr 1-3
 }
