@@ -76,7 +76,7 @@ func TestFormatting(t *testing.T) {
 	}
 }
 
-func Test(t *testing.T) {
+func TestDefaultUsecase(t *testing.T) {
 	cases := []struct {
 		files []string
 		want  string
