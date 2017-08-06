@@ -24,11 +24,13 @@ type Splitter struct {
 var reDefaultSplit = regexp.MustCompile(`(.*\D)*(\d+)(.*?)$`)
 
 // DefaultSplitter is a default splitter for this package.
+//
 // User could create their own splitter. See NewSplitter.
 var DefaultSplitter = NewSplitter(reDefaultSplit)
 
 // NewSplitter creates a new custom splitter.
-// Splitter always assume that the regular expression is right.
+//
+// Splitter always assumes that it's regular expression is right.
 // So who makes their own splitter should ensure that it is right.
 func NewSplitter(re *regexp.Regexp) *Splitter {
 	return &Splitter{
@@ -36,7 +38,7 @@ func NewSplitter(re *regexp.Regexp) *Splitter {
 	}
 }
 
-// Split takes file name and splits it into 3 parts,
+// Split takes a file name and splits it into 3 parts,
 // which is pre, digits, and post.
 func (s *Splitter) Split(fname string) (pre, digits, post string, err error) {
 	m := s.re.FindStringSubmatch(fname)
@@ -46,7 +48,8 @@ func (s *Splitter) Split(fname string) (pre, digits, post string, err error) {
 	return m[1], m[2], m[3], nil
 }
 
-// Fmt{Sharp, DollarF, PrecentD} are pre-defined formatter, that covers most user's need.
+// Fmt{Sharp, DollarF, PrecentD} are pre-defined formatter,
+// that covers most user's need.
 var (
 	FmtSharp = func(pre, digits, post string) string {
 		return pre + strings.Repeat("#", len(digits)) + post
@@ -77,7 +80,9 @@ func NewManager(splitter *Splitter, formatting func(pre, digits, post string) st
 }
 
 // Add adds a file to the manager.
-// If the file's sequence is not exist yet, it will create a new sequence automatically.
+//
+// If the file's sequence is not exist yet,
+// it will create a new sequence automatically.
 func (m *Manager) Add(fname string) error {
 	pre, digits, post, err := m.splitter.Split(fname)
 	if err != nil {
@@ -106,6 +111,7 @@ func (m *Manager) SeqNames() []string {
 }
 
 // String returns a string that shows it's sequences.
+//
 // It will be multiple lines if it has more than one sequence.
 func (m *Manager) String() string {
 	str := ""
@@ -118,7 +124,7 @@ func (m *Manager) String() string {
 	return str
 }
 
-// A Seq is a frame sequence. It does not hold sequence name.
+// A Seq is a frame sequence. It does not hold a sequence name.
 type Seq struct {
 	frames map[int]struct{}
 }
@@ -131,8 +137,9 @@ func NewSeq() *Seq {
 }
 
 // AddFrame adds a frame into sequence.
+//
 // It treats negative frames are invalid.
-// So ErrNegativeFrame error will return when it takes a negative frame.
+// So returns ErrNegativeFrame when it takes a negative frame.
 func (s *Seq) AddFrame(f int) error {
 	if f < 0 {
 		return ErrNegativeFrame
@@ -144,7 +151,7 @@ func (s *Seq) AddFrame(f int) error {
 	return nil
 }
 
-// Ranges convert a sequence to several contiguous ranges.
+// Ranges converts a sequence to several contiguous ranges.
 func (s *Seq) Ranges() []*Range {
 	if len(s.frames) == 0 {
 		return []*Range{}
@@ -182,8 +189,8 @@ func (s *Seq) String() string {
 	return str
 }
 
-// Range is a contiguous frame range.
-// It includes Max frame.
+// Range is a contiguous frame range,
+// which includes Max frame.
 type Range struct {
 	Min int
 	Max int
@@ -197,8 +204,9 @@ func NewRange(f int) *Range {
 	}
 }
 
-// Extend extends a range by one if the frame is bigger than current max frame by 1.
-// If it extends, it returns true, or it returns false.
+// Extend extends a range by one, only if,
+// input frame is bigger than current max frame by 1.
+// When it extends, it returns true, or it returns false.
 func (r *Range) Extend(f int) bool {
 	if f != r.Max+1 {
 		return false
@@ -207,7 +215,7 @@ func (r *Range) Extend(f int) bool {
 	return true
 }
 
-// String express the range with dash. Like "1-10".
+// String expresses the range with dash. Like "1-10".
 // But if the min and max is same, it will just show one. Like "5".
 func (r *Range) String() string {
 	if r.Min == r.Max {
