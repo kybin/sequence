@@ -17,10 +17,16 @@ var (
 
 // Splitter is a file name splitter.
 type Splitter struct {
+	// re catches sequence file name
+	// and groups the file name into 3 parts (pre, digits, post).
+	// When it does not match, the file will treated as non-sequece file.
+	//
+	// Note: If it does not have 3 sub groups, it will panic.
 	re *regexp.Regexp
 }
 
-// reDefaultSplit is default regular expression for Splitter.
+// reDefaultSplit is regular expression for DefaultSplitter.
+// It finds right most digit strings and it's pre and post parts.
 var reDefaultSplit = regexp.MustCompile(`(.*\D)*(\d+)(.*?)$`)
 
 // DefaultSplitter is a default splitter for this package.
@@ -28,10 +34,13 @@ var reDefaultSplit = regexp.MustCompile(`(.*\D)*(\d+)(.*?)$`)
 // User could create their own splitter. See NewSplitter.
 var DefaultSplitter = NewSplitter(reDefaultSplit)
 
-// NewSplitter creates a new custom splitter.
+// NewSplitter creates a new splitter.
 //
-// Splitter always assumes that it's regular expression is right.
-// So who makes their own splitter should ensure that it is right.
+// Splitter assumes it's regular expression could catch sequence file name
+// and groups the file name into 3 parts (pre, digits, post).
+// When it does not match, the file will treated as non-sequece file.
+//
+// Note: If the regular expression does not have 3 sub groups, it will panic.
 func NewSplitter(re *regexp.Regexp) *Splitter {
 	return &Splitter{
 		re: re,
@@ -40,6 +49,7 @@ func NewSplitter(re *regexp.Regexp) *Splitter {
 
 // Split takes a file name and splits it into 3 parts,
 // which is pre, digits, and post.
+// It returns error if the file name does not look like a sequence file.
 func (s *Splitter) Split(fname string) (pre, digits, post string, err error) {
 	m := s.re.FindStringSubmatch(fname)
 	if m == nil {
@@ -216,7 +226,7 @@ func (r *Range) Extend(f int) bool {
 }
 
 // String expresses the range with dash. Like "1-10".
-// But if the min and max is same, it will just show one. Like "5".
+// But if the min and max are same, it will just show one. Like "5".
 func (r *Range) String() string {
 	if r.Min == r.Max {
 		return fmt.Sprintf("%d", r.Min)
