@@ -27,7 +27,7 @@ type Splitter struct {
 
 // reDefaultSplit is regular expression for DefaultSplitter.
 // It finds right most digit strings and it's pre and post parts.
-var reDefaultSplit = regexp.MustCompile(`(.*\D)*(\d+)(.*?)$`)
+var reDefaultSplit = regexp.MustCompile(`(.*\D)?(\d+)(.*?)$`)
 
 // DefaultSplitter is a default splitter for this package.
 //

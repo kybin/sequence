@@ -26,6 +26,14 @@ func TestDefaultSplitter(t *testing.T) {
 			fname: "/a/b/c/img.0001.exr",
 			want:  []string{"/a/b/c/img.", "0001", ".exr"},
 		},
+		{
+			fname: "0001.exr",
+			want:  []string{"", "0001", ".exr"},
+		},
+		{
+			fname: "S01C002_img.0001.exr",
+			want:  []string{"S01C002_img.", "0001", ".exr"},
+		},
 	}
 	for _, c := range cases {
 		gotPre, gotDigits, gotPost, err := DefaultSplitter.Split(c.fname)
